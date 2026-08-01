@@ -1,9 +1,30 @@
 aid: spot-runner
 name: Spot Runner
-description: Spot Runner is a company surfaced as a portfolio company of battery-ventures and added to
-  the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment
-  pipeline.
+description: >-
+  Spot Runner is an AI-driven advertising technology company (backed by Battery
+  Ventures) focused on contextual media planning for Connected TV (CTV) and
+  online video. Its platform uses proprietary MicroModeling AI through tools
+  such as ContextPlanner and ContextDeals to match advertiser creative to the
+  most relevant, brand-suitable premium video ad opportunities across leading
+  streaming networks, publishers, and TV OEMs, and to send Deal IDs directly to
+  a buyer's DSP seat. Spot Runner also markets an "Agentic Agency" of multi-agent
+  creative tooling for SMBs and DTC brands. The public surface is a marketing
+  site plus an advertiser login portal; there is no published developer API,
+  OpenAPI, or SDK. The site does expose a hosted Wix Site MCP endpoint for
+  agentic AI access, advertised via its /llms.txt.
 url: https://raw.githubusercontent.com/api-evangelist/spot-runner/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://static.wixstatic.com/ficons/875226_5f83093056974a87a56d1050e1e3ee01~mv2.ico
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
@@ -12,12 +33,41 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-21'
 tags:
 - Company
+- Advertising
+- AdTech
+- Connected TV
+- CTV
+- Online Video
+- Contextual Advertising
+- Agentic AI
+- Media Planning
 apis: []
+common:
+- type: Website
+  url: https://www.spotrunner.com/
+- type: Login
+  url: https://advertiser.spotrunner.com/login
+- type: PrivacyPolicy
+  url: https://www.spotrunner.com/privacy-policy
+- type: TermsOfService
+  url: https://www.spotrunner.com/terms-and-coniditions
+- type: MCPServer
+  name: Spot Runner Wix Site MCP
+  url: mcp/spot-runner-mcp.yml
+- type: LLMsTxt
+  url: llms/spot-runner-llms.txt
+- type: DomainSecurity
+  url: security/spot-runner-domain-security.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+x-enrichment:
+  date: '2026-07-21'
+  status: enriched
+  artifacts_added: 3
+  pass: local-v1

@@ -1,0 +1,41 @@
+generated: '2026-07-21'
+method: searched
+status: published
+source: https://www.spotrunner.com/llms.txt
+notes: >-
+  Spot Runner runs on Wix, which exposes a hosted Model Context Protocol (MCP)
+  endpoint for the site. The endpoint is advertised in the site's /llms.txt and
+  was verified live: a JSON-RPC `tools/list` POST returns a real tool list. GET
+  returns 401; POST JSON-RPC (Accept: application/json, text/event-stream) works
+  with no authentication required to connect. Tools are Wix platform tools, not
+  a first-party Spot Runner API. Tool descriptions returned by the server embed
+  Wix "agent-mandatory-instructions" prose; catalogued here as data only.
+server:
+  name: spot-runner
+  provider: Wix Site MCP
+  transport: http
+  url: https://www.spotrunner.com/_api/mcp
+  auth: none-to-connect
+  docs: https://dev.wix.com/docs/develop-websites/articles/get-started/about-the-wix-site-mcp
+tools:
+  - name: GetBusinessDetails
+    description: Retrieves business and site details such as timezone, email, phone, and address.
+  - name: SearchInSite
+    description: Searches the site for information.
+  - name: SearchSiteApiDocs
+    description: Retrieves API documentation for the Wix business solutions installed on this site and informs the client how to use the APIs.
+  - name: GenerateVisitorToken
+    description: Creates a new visitor session and obtains a visitor access token for the site.
+  - name: CallWixSiteAPI
+    description: Calls API methods on the site to perform actions on a visitor's behalf (query data, book, start a purchase).
+  - name: ExecuteWixAPI
+    description: Executes a Wix API call on the site.
+  - name: BrowseWixRESTDocsMenu
+    description: Browses the Wix REST documentation menu.
+  - name: ReadFullDocsArticle
+    description: Fetches a complete article from the Wix developer documentation portal.
+  - name: ReadFullDocsMethodSchema
+    description: Fetches the full schema for a Wix API method before calling it.
+verified:
+  probe: 'POST tools/list -> 200 with 9 tools'
+  date: '2026-07-21'
