@@ -33,7 +33,7 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-21'
+modified: '2026-08-13'
 tags:
 - Company
 - Advertising
@@ -61,13 +61,40 @@ common:
   url: llms/spot-runner-llms.txt
 - type: DomainSecurity
   url: security/spot-runner-domain-security.yml
+- type: Authentication
+  url: authentication/spot-runner-authentication.yml
+- type: LinkedIn
+  url: https://www.linkedin.com/company/10225
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 x-enrichment:
-  date: '2026-07-21'
-  status: enriched
-  artifacts_added: 3
+  date: '2026-08-13'
+  status: minimal
+  artifacts_added: 6
   pass: local-v1
+x-coverage:
+  state: none
+  reason: no-developer-program
+  detail: >-
+    Spot Runner's entire public site is four Wix pages (home, terms, privacy, accessibility)
+    with no developer portal, docs, spec or SDK anywhere; the advertiser portal's real backend
+    at api.spotrunner.com/v1 is live (/health returns 200) but is the SaaS product's own
+    private API, published nowhere, and the only public machine-readable surface is the Wix
+    platform's Site MCP endpoint.
+  evidence:
+  - url: https://www.spotrunner.com/pages-sitemap.xml
+    status: 200
+  - url: https://www.spotrunner.com/openapi.json
+    status: 400
+  - url: https://api.spotrunner.com/openapi.json
+    status: 404
+  - url: https://api.spotrunner.com/health
+    status: 200
+  - url: https://www.spotrunner.com/.well-known/agent-card.json
+    status: 400
+  - url: https://www.spotrunner.com/_api/mcp
+    status: 200
+  checked: '2026-08-13'
