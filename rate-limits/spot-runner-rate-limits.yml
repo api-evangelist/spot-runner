@@ -1,0 +1,38 @@
+generated: '2026-08-13'
+method: probed
+source: https://www.spotrunner.com/_api/mcp
+limit_count: 0
+rate_limits: []
+notes: >-
+  Spot Runner documents no rate limits anywhere — there is no developer portal, no API
+  reference and no published policy. The one public machine surface, the Wix Site MCP
+  endpoint, was called live and its response headers were read: it returns NO rate-limit
+  signal of any kind (no X-RateLimit-*, no RateLimit-*, no Retry-After), so an agent has no
+  runtime budget signal to work with. No RateLimits pointer is wired in apis.yml, because a
+  pointer here would credit a rate-limit signal that does not exist.
+observed:
+- surface: Wix Site MCP endpoint
+  url: https://www.spotrunner.com/_api/mcp
+  method: POST
+  request: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+  status: 200
+  rate_limit_headers: []
+  headers_present:
+  - content-type
+  - mcp-session-id
+  - etag
+  - cache-control
+  - x-wix-request-id
+  - x-robots-tag
+  - strict-transport-security
+  - x-content-type-options
+  note: >-
+    Wix platform response (server Pepyaka). Any throttling Wix applies to Site MCP traffic is
+    undocumented on Spot Runner's surface and unsignalled in the response.
+- surface: advertiser portal backend health check
+  url: https://api.spotrunner.com/health
+  method: GET
+  status: 200
+  rate_limit_headers: []
+  note: private backend; no documented limits
+exhaustion_status_code: null

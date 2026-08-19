@@ -1,15 +1,13 @@
-generated: '2026-07-21'
+generated: '2026-08-13'
 method: searched
 status: published
 source: https://www.spotrunner.com/llms.txt
-notes: >-
-  Spot Runner runs on Wix, which exposes a hosted Model Context Protocol (MCP)
-  endpoint for the site. The endpoint is advertised in the site's /llms.txt and
-  was verified live: a JSON-RPC `tools/list` POST returns a real tool list. GET
-  returns 401; POST JSON-RPC (Accept: application/json, text/event-stream) works
-  with no authentication required to connect. Tools are Wix platform tools, not
-  a first-party Spot Runner API. Tool descriptions returned by the server embed
-  Wix "agent-mandatory-instructions" prose; catalogued here as data only.
+notes: 'Spot Runner runs on Wix, which exposes a hosted Model Context Protocol (MCP) endpoint for the
+  site. The endpoint is advertised in the site''s /llms.txt and was verified live: a JSON-RPC `tools/list`
+  POST returns a real tool list. GET returns 401; POST JSON-RPC (Accept: application/json, text/event-stream)
+  works with no authentication required to connect. Tools are Wix platform tools, not a first-party Spot
+  Runner API. Tool descriptions returned by the server embed Wix "agent-mandatory-instructions" prose;
+  catalogued here as data only.'
 server:
   name: spot-runner
   provider: Wix Site MCP
@@ -17,25 +15,96 @@ server:
   url: https://www.spotrunner.com/_api/mcp
   auth: none-to-connect
   docs: https://dev.wix.com/docs/develop-websites/articles/get-started/about-the-wix-site-mcp
+tools_file: spot-runner-mcp-tools.json
 tools:
-  - name: GetBusinessDetails
-    description: Retrieves business and site details such as timezone, email, phone, and address.
-  - name: SearchInSite
-    description: Searches the site for information.
-  - name: SearchSiteApiDocs
-    description: Retrieves API documentation for the Wix business solutions installed on this site and informs the client how to use the APIs.
-  - name: GenerateVisitorToken
-    description: Creates a new visitor session and obtains a visitor access token for the site.
-  - name: CallWixSiteAPI
-    description: Calls API methods on the site to perform actions on a visitor's behalf (query data, book, start a purchase).
-  - name: ExecuteWixAPI
-    description: Executes a Wix API call on the site.
-  - name: BrowseWixRESTDocsMenu
-    description: Browses the Wix REST documentation menu.
-  - name: ReadFullDocsArticle
-    description: Fetches a complete article from the Wix developer documentation portal.
-  - name: ReadFullDocsMethodSchema
-    description: Fetches the full schema for a Wix API method before calling it.
+- name: GetBusinessDetails
+  description: Retrieves business and site details such as timezone, email, phone, and address.
+  parameters: []
+  required: []
+- name: SearchInSite
+  description: Searches the site for information.
+  parameters:
+  - searchTerm
+  required:
+  - searchTerm
+- name: SearchSiteApiDocs
+  description: Retrieves API documentation for the Wix business solutions installed on this site and informs
+    the client how to use the APIs.
+  parameters:
+  - searchTerm
+  required:
+  - searchTerm
+- name: GenerateVisitorToken
+  description: Creates a new visitor session and obtains a visitor access token for the site.
+  parameters: []
+  required: []
+- name: CallWixSiteAPI
+  description: Calls API methods on the site to perform actions on a visitor's behalf (query data, book,
+    start a purchase).
+  parameters:
+  - visitorToken
+  - url
+  - method
+  - body
+  required:
+  - visitorToken
+  - url
+  - method
+- name: ExecuteWixAPI
+  description: Executes a Wix API call on the site.
+  parameters:
+  - code
+  - reason
+  - hasMutations
+  - sourceDocUrls
+  - visitorToken
+  required:
+  - code
+  - reason
+  - hasMutations
+  - sourceDocUrls
+  - visitorToken
+- name: BrowseWixRESTDocsMenu
+  description: Browses the Wix REST documentation menu.
+  parameters:
+  - menuUrl
+  - reason
+  required:
+  - reason
+- name: ReadFullDocsArticle
+  description: Fetches a complete article from the Wix developer documentation portal.
+  parameters:
+  - articleUrl
+  required:
+  - articleUrl
+- name: ReadFullDocsMethodSchema
+  description: Fetches the full schema for a Wix API method before calling it.
+  parameters:
+  - articleUrl
+  - reason
+  required:
+  - articleUrl
+  - reason
 verified:
-  probe: 'POST tools/list -> 200 with 9 tools'
+  probe: POST tools/list -> 200 with 9 tools
   date: '2026-07-21'
+  reverified: '2026-08-13'
+  reverified_probe: >-
+    POST tools/list -> HTTP 200, 28782 bytes, 9 tools with full inputSchema; response saved
+    verbatim to mcp/spot-runner-mcp-tools.json. Tool set unchanged since 2026-07-21.
+deployment:
+  mode: remote
+  endpoint: https://www.spotrunner.com/_api/mcp
+  auth: none
+  verified: probed
+  probe: live
+  tools: 9
+  checked: '2026-08-13'
+  source: live tools/list probe
+crosswalk:
+  emitted: false
+  reason: >-
+    A tool crosswalk binds MCP tools to backing OpenAPI operationIds. Spot Runner publishes no
+    OpenAPI and no GraphQL surface (see well-known/spot-runner-well-known.yml), and these nine
+    tools are Wix platform tools rather than projections of a Spot Runner contract, so there is
+    nothing to bind. Emitting one would be fabrication.

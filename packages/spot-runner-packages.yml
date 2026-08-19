@@ -1,0 +1,48 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  npm registry search, PyPI, RubyGems, crates.io, GitHub repository + org search,
+  and the Spot Runner marketing site (www.spotrunner.com)
+package_count: 0
+packages: []
+notes: >-
+  Spot Runner publishes no first-party client library in any registry. No SDKs pointer is
+  wired in apis.yml, because there is no SDK to point at — the sdk_count checks must stay
+  at zero rather than be credited to an artifact that documents an absence.
+registries_checked:
+- registry: npm
+  query: https://registry.npmjs.org/-/v1/search?text=spotrunner
+  status: 200
+  result: zero results
+- registry: npm
+  query: https://registry.npmjs.org/-/v1/search?text=spot-runner
+  status: 200
+  result: no Spot Runner package (only unrelated *-runner test-runner packages)
+- registry: pypi
+  query: https://pypi.org/pypi/spotrunner/json
+  status: 404
+- registry: pypi
+  query: https://pypi.org/pypi/spot-runner/json
+  status: 404
+- registry: rubygems
+  query: https://rubygems.org/api/v1/gems/spotrunner.json
+  status: 404
+- registry: crates.io
+  query: https://crates.io/api/v1/crates/spotrunner
+  status: 403
+  note: crates.io refused the unauthenticated probe; no Spot Runner crate is referenced anywhere in the docs either
+source_repos:
+- query: https://api.github.com/search/repositories?q=spotrunner
+  status: 200
+  result: >-
+    3 repositories, none owned by Spot Runner (Cloudy-Networks/spotrunner,
+    Cloudy-Networks/mockend-spotrunner, nicoop0p/SpotRunners)
+- query: https://api.github.com/orgs/Spot-Runner
+  status: 200
+  result: >-
+    GitHub org "Spot-Runner" (display name "Spot Runner") exists with 0 public repositories,
+    no blog, no location and no description. Ownership by this company cannot be proven from
+    the org metadata or linked from the site, so no GitHubOrganization pointer is claimed.
+- query: https://api.github.com/orgs/SpotRunner
+  status: 200
+  result: 'GitHub org "SpotRunner", 0 public repositories; same unprovable-ownership finding'

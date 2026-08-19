@@ -1,0 +1,25 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.spotrunner.com/pages-sitemap.xml
+plan_count: 0
+plans: []
+model: contact-sales
+notes: >-
+  Spot Runner publishes no pricing page and no plan tiers. Its entire public site is four
+  pages — the homepage, terms, privacy policy and an accessibility statement — with no
+  pricing, packaging or rate card anywhere on it. ContextPlanner and ContextDeals are sold
+  through a media-buying relationship: the homepage's only conversion paths are the
+  advertiser portal login and an info@spotrunner.com contact address. No pricing pointer is
+  wired in apis.yml, because there is no pricing page to point at.
+evidence:
+- url: https://www.spotrunner.com/pages-sitemap.xml
+  status: 200
+  result: >-
+    the complete page inventory is /, /terms-and-coniditions, /accessibility-statement and
+    /privacy-policy — no /pricing, /plans or /packages
+- url: https://www.spotrunner.com/
+  status: 200
+  result: homepage carries no price, tier or quota; CTA is the advertiser portal login
+- url: https://advertiser.spotrunner.com/login
+  status: 200
+  result: portal login; any commercial terms sit behind it

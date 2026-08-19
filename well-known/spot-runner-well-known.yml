@@ -1,0 +1,164 @@
+generated: '2026-08-13'
+method: probed
+source: live GET probes of every Spot Runner host known to this repo
+notes: >-
+  Every /.well-known/ path was probed on all four Spot Runner hosts and NOTHING was served.
+  No WellKnown or SecurityTxt pointer is wired in apis.yml, because none of these probes
+  returned a real document. Two failure shapes are recorded here so a later round does not
+  mistake them for hits: www.spotrunner.com is a Wix (Thunderbolt) site that answers HTTP 400
+  with an HTML error page for any unknown path, and advertiser.spotrunner.com is a Vite/React
+  single-page app whose catch-all answers HTTP 200 with the same 523-byte index.html shell for
+  EVERY path — an SPA catch-all, not a document. api.spotrunner.com is a real Express service
+  (the advertiser portal backend) that returns "Cannot GET /<path>" for everything except
+  /health.
+hosts:
+- host: https://www.spotrunner.com
+  role: marketing site (Wix)
+  documents:
+  - path: /.well-known/security.txt
+    status: 400
+  - path: /.well-known/openid-configuration
+    status: 400
+  - path: /.well-known/oauth-authorization-server
+    status: 400
+  - path: /.well-known/oauth-protected-resource
+    status: 400
+  - path: /.well-known/api-catalog
+    status: 400
+  - path: /.well-known/ai-plugin.json
+    status: 400
+  - path: /.well-known/agent-card.json
+    status: 400
+  - path: /.well-known/agent.json
+    status: 400
+- host: https://advertiser.spotrunner.com
+  role: advertiser login portal (single-page app)
+  false_positive: spa-catch-all
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    accepted: false
+    note: HTML SPA shell (523 bytes), identical for every path — not a document
+  - path: /.well-known/openid-configuration
+    status: 200
+    accepted: false
+    note: HTML SPA shell
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    accepted: false
+    note: HTML SPA shell
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    accepted: false
+    note: HTML SPA shell
+  - path: /.well-known/api-catalog
+    status: 200
+    accepted: false
+    note: HTML SPA shell
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    accepted: false
+    note: HTML SPA shell
+  - path: /.well-known/agent-card.json
+    status: 200
+    accepted: false
+    note: HTML SPA shell — rejected per the A2A probe rule; no agent card exists
+  - path: /.well-known/agent.json
+    status: 200
+    accepted: false
+    note: HTML SPA shell — rejected; no legacy agent card either
+- host: https://api.spotrunner.com
+  role: advertiser portal backend (Express); private, undocumented
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://spotrunner.com
+  role: apex (redirects to www)
+  documents:
+  - path: /.well-known/security.txt
+    status: 400
+  - path: /.well-known/agent-card.json
+    status: 400
+  - path: /.well-known/agent.json
+    status: 400
+contract_discovery:
+  notes: >-
+    STEP 0b was run in full before recording "no published contract". No OpenAPI, Swagger,
+    GraphQL SDL or AsyncAPI document was found on any host. The only machine-readable
+    surface Spot Runner serves is the Wix Site MCP endpoint (see mcp/spot-runner-mcp.yml),
+    which answered a live tools/list with 9 tools and their inputSchemas.
+  probes:
+  - url: https://www.spotrunner.com/openapi.json
+    status: 400
+    result: Wix HTML error page
+  - url: https://www.spotrunner.com/openapi.yaml
+    status: 400
+  - url: https://www.spotrunner.com/swagger.json
+    status: 400
+  - url: https://www.spotrunner.com/api-docs
+    status: 404
+  - url: https://www.spotrunner.com/docs
+    status: 404
+  - url: https://www.spotrunner.com/redoc
+    status: 404
+  - url: https://www.spotrunner.com/graphql
+    status: 404
+  - url: https://advertiser.spotrunner.com/openapi.json
+    status: 200
+    result: rejected — HTML SPA shell, not a spec
+  - url: https://advertiser.spotrunner.com/swagger.json
+    status: 200
+    result: rejected — HTML SPA shell, not a spec
+  - url: https://api.spotrunner.com/openapi.json
+    status: 404
+  - url: https://api.spotrunner.com/swagger.json
+    status: 404
+  - url: https://api.spotrunner.com/api-docs
+    status: 404
+  - url: https://api.spotrunner.com/v1
+    status: 404
+  - url: https://api.spotrunner.com/graphql
+    status: 404
+  - url: https://api.spotrunner.com/health
+    status: 200
+    result: 'plain text "OK" — the host is live, but publishes no contract'
+  - url: https://www.spotrunner.com/_api/mcp
+    status: 200
+    result: JSON-RPC tools/list returned 9 tools with inputSchemas
+  - url: https://agentic-studio-1044008285932.us-west1.run.app/
+    status: 200
+    result: >-
+      "Agentic Studio" app linked from the Spot Runner homepage, hosted on Google Cloud Run;
+      HTML app only — /openapi.json, /docs, /mcp and both agent-card paths all 404
+  - url: https://creative-director-back-up-code-merge-copy-1044008285932.us-west1.run.app/
+    status: 200
+    result: second Cloud Run app linked from the homepage; same shape, no contract
+  - url: https://spotrunner.net/
+    status: 402
+    result: 'Vercel DEPLOYMENT_DISABLED — dead host referenced from the marketing site'
+private_api_host:
+  host: https://api.spotrunner.com
+  evidence: >-
+    The advertiser portal bundle (https://advertiser.spotrunner.com/assets/index-B9BDGY7_.js,
+    HTTP 200) hard-codes an environment map of Spot Runner API bases —
+    dev https://api.dev.spotrunner.com, stage https://api.stage.spotrunner.com,
+    prod https://api.spotrunner.com — with a /v1/ path prefix. /health returns 200 "OK".
+  published: false
+  note: >-
+    This is the advertiser portal's own backend, not a developer product. Spot Runner publishes
+    no reference, no spec and no developer portal for it, so no apis[] entry is claimed for it
+    here. Recorded as an observation only.

@@ -1,0 +1,71 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  mcp/spot-runner-mcp-tools.json (live tools/list, HTTP 200) + llms/spot-runner-llms.txt
+  (https://www.spotrunner.com/llms.txt, HTTP 200)
+scope: >-
+  This profile covers the ONLY public API surface Spot Runner exposes — the Wix Site MCP
+  endpoint. Spot Runner publishes no REST/GraphQL developer API, so there are no OpenAPI
+  securitySchemes to derive from.
+surfaces:
+- name: Wix Site MCP endpoint
+  url: https://www.spotrunner.com/_api/mcp
+  transport: streamable-http (JSON-RPC 2.0)
+  connect_auth: none
+  connect_evidence: >-
+    An anonymous POST of {"jsonrpc":"2.0","id":1,"method":"tools/list"} returned HTTP 200 with
+    the full 9-tool manifest. No Authorization header, API key or OAuth challenge was required
+    to connect or to enumerate tools. A bare GET on the same URL returns 401.
+  schemes:
+  - id: anonymous-connect
+    type: none
+    applies_to:
+    - tools/list
+    - GetBusinessDetails
+    - SearchInSite
+    - SearchSiteApiDocs
+    - BrowseWixRESTDocsMenu
+    - ReadFullDocsArticle
+    - ReadFullDocsMethodSchema
+    description: >-
+      Discovery and read tools require no credential. They return only information already
+      public on the site.
+  - id: visitor-token
+    type: bearer-like
+    obtained_via: GenerateVisitorToken
+    passed_as: visitorToken argument on the tool call (not an HTTP header)
+    applies_to:
+    - CallWixSiteAPI
+    - ExecuteWixAPI
+    required: true
+    description: >-
+      Acting tools require a short-lived Wix visitor access token. The agent calls
+      GenerateVisitorToken to create a visitor session, then passes the returned token as the
+      visitorToken argument. The token carries visitor-level authority only — it can query
+      site data, start a booking or begin a purchase on an anonymous visitor's behalf, but it
+      does not authenticate a Spot Runner customer.
+    evidence: >-
+      inputSchema for CallWixSiteAPI requires [visitorToken, url, method]; ExecuteWixAPI
+      requires [code, reason, hasMutations, sourceDocUrls, visitorToken].
+  oauth:
+    supported: false
+    evidence: >-
+      /.well-known/oauth-authorization-server and /.well-known/oauth-protected-resource both
+      404/400 on every Spot Runner host (see well-known/spot-runner-well-known.yml).
+  openid_connect:
+    supported: false
+    evidence: /.well-known/openid-configuration returns no document on any host
+- name: Advertiser portal backend
+  url: https://api.spotrunner.com
+  public: false
+  documented: false
+  observed_flow: passwordless-email (magic link)
+  evidence: >-
+    The portal SPA bundle (https://advertiser.spotrunner.com/assets/index-B9BDGY7_.js, HTTP
+    200) names /v1/auth/email/login and /v1/auth/token against the api.spotrunner.com base.
+    This is the portal's own private backend; Spot Runner publishes no reference or spec for
+    it, so no scheme is claimed beyond the observed login shape.
+notes: >-
+  No scopes/ artifact is emitted: there is no OAuth surface and no permission model to
+  enumerate. Nothing here was invented — every scheme is read off a live response or the
+  provider's own llms.txt.
