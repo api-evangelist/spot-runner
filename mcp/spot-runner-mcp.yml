@@ -89,22 +89,19 @@ verified:
   probe: POST tools/list -> 200 with 9 tools
   date: '2026-07-21'
   reverified: '2026-08-13'
-  reverified_probe: >-
-    POST tools/list -> HTTP 200, 28782 bytes, 9 tools with full inputSchema; response saved
-    verbatim to mcp/spot-runner-mcp-tools.json. Tool set unchanged since 2026-07-21.
+  reverified_probe: POST tools/list -> HTTP 200, 28782 bytes, 9 tools with full inputSchema; response
+    saved verbatim to mcp/spot-runner-mcp-tools.json. Tool set unchanged since 2026-07-21.
 deployment:
   mode: remote
   endpoint: https://www.spotrunner.com/_api/mcp
-  auth: none
   verified: probed
   probe: live
   tools: 9
-  checked: '2026-08-13'
-  source: live tools/list probe
+  checked: '2026-08-12'
+  source: catalog MCP census
 crosswalk:
   emitted: false
-  reason: >-
-    A tool crosswalk binds MCP tools to backing OpenAPI operationIds. Spot Runner publishes no
-    OpenAPI and no GraphQL surface (see well-known/spot-runner-well-known.yml), and these nine
-    tools are Wix platform tools rather than projections of a Spot Runner contract, so there is
-    nothing to bind. Emitting one would be fabrication.
+  reason: A tool crosswalk binds MCP tools to backing OpenAPI operationIds. Spot Runner publishes no OpenAPI
+    and no GraphQL surface (see well-known/spot-runner-well-known.yml), and these nine tools are Wix platform
+    tools rather than projections of a Spot Runner contract, so there is nothing to bind. Emitting one
+    would be fabrication.
