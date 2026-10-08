@@ -71,6 +71,10 @@ tags_raw:
 - Media Planning
 apis: []
 common:
+- type: Plans
+  url: plans/spot-runner-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/spot-runner-rate-limits.yml
 - type: Website
   url: https://www.spotrunner.com/
 - type: Login
